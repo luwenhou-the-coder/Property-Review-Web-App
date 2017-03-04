@@ -1,0 +1,9 @@
+{ 
+	"author" : "{{review.author}}",
+	"rating" : "{{review.rating}}",
+	"vote" : "{{review.votes}}",
+	"content" : "{{review.content}}",
+	"post_time" : "{{review.post_time}}",
+	"id": "{{review.id}}",
+	"statistics": {% include 'studentnest/statistics.json' %}
+}

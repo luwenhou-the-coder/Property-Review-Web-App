@@ -1,0 +1,10 @@
+{
+  "male_count" : {% if reviewer_statistics.gender_statistics is None %}"N/A"{% else %}{{ reviewer_statistics.gender_statistics.male_count }}{% endif %},
+  "female_count" : {% if reviewer_statistics.gender_statistics is None %}"N/A"{% else %}{{ reviewer_statistics.gender_statistics.female_count }}{% endif %},
+  "zero_seventeen_count" : {% if reviewer_statistics.age_statistics is None %}"N/A"{% else %}{{ reviewer_statistics.age_statistics.zero_seventeen_count }}{% endif %},
+  "eighteen_twentytwo_count" : {% if reviewer_statistics.age_statistics is None %}"N/A"{% else %}{{ reviewer_statistics.age_statistics.eighteen_twentytwo_count }}{% endif %},
+  "twentythree_twentynine_count" : {% if reviewer_statistics.age_statistics is None %}"N/A"{% else %}{{ reviewer_statistics.age_statistics.twentythree_twentynine_count }}{% endif %},
+  "thirty_more_count" : {% if reviewer_statistics.age_statistics is None %}"N/A"{% else %}{{ reviewer_statistics.age_statistics.thirty_more_count }}{% endif %},
+  "university_statistics" : [{% for single_univ_statistics in reviewer_statistics.univ_statistics %}{%spaceless%}{% include 'studentnest/university_statistics.json' %}{%endspaceless%}{% if not forloop.last %}, {% endif %}{% endfor %}],
+  "major_statistics" : [{% for single_major_statistics in reviewer_statistics.major_statistics %}{%spaceless%}{% include 'studentnest/major_statistics.json' %}{%endspaceless%}{% if not forloop.last %}, {% endif %}{% endfor %}]
+}

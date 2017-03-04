@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Student Nest</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="{% static 'studentnest/css/materialize.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="{% static 'studentnest/css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+  {% block rating-css %}{% endblock %}
+</head>
+<body>
+  <div class="page-wrap">
+      <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="{% url 'studentnest:home' %}" class="brand-logo">StudentNest</a>
+          {% if user.is_authenticated %}
+          <ul id="dropdown1" class="dropdown-content">
+            <li><a href="{% url 'studentnest:edit_profile' %}">Profile</a></li>
+            <li><a href="{% url 'studentnest:change_password' %}">Password</a></li>
+            <li class="divider"></li>
+            <li><a href="{% url 'studentnest:logout' %}">Log Out</a></li>
+          </ul>
+          <ul class="right hide-on-med-and-down">
+	    {% if profile.is_publisher %}
+	    <li><a href="{% url 'studentnest:manage' %}">Manage Property</a></li>
+            <li><a href="{% url 'studentnest:publish' %}">Publish Property</a></li>
+	    {% else %}
+	    <li><a href="{% url 'studentnest:apply_publish' %}">Apply for Publisher</a></li>
+	    {% endif %}
+            <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Settings<i class="material-icons right">arrow_drop_down</i></a></li>
+          </ul>
+          {% else %}
+          <ul class="right hide-on-med-and-down">
+            <li><a href="{% url 'studentnest:login' %}">Sign In</a></li>
+          </ul>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="{% url 'studentnest:register' %}">Sign Up</a></li>
+          </ul>
+          {% endif %}
+        </div>
+      </nav>
+      <br>
+      <div class="container">{% block content %}{% endblock %}</div>
+      <br><br>
+  </div>
+  <footer class="page-footer orange footer-wrapper">
+    <div class="footer-copyright">
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m3"></div>
+          <div class="col s12 m3">
+              &copy; 2016 StudentNest
+          </div>
+          <div class="col s12 m6">
+              <div class="row">
+                <div class="col s6 m3">Follow us</div>
+                <div class="col s6 m3">
+                    <img src="{% static 'studentnest/images/facebook.png' %}" class="social-logo-img">
+                    <img src="{% static 'studentnest/images/twitter.jpg' %}" class="social-logo-img">
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script>$(".dropdown-button").dropdown();</script>
+  <script>$(document).ready(function() {
+    $('select').material_select();
+  });</script>
+  {% block script %}{% endblock %}
+  <script src="{% static 'studentnest/js/materialize.js' %}"></script>
+  <script src="{% static 'studentnest/js/init.js' %}"></script>
+  {% if apply_message %}
+  <script>alert("{{apply_message}}")</script>
+  {% endif %}
+
+  {% block rating-js %}{% endblock %}
+  {% block list-property-js %}{% endblock %}
+  {% block search-property-js %}{% endblock %}
+  {% block edit-profile-js %}{% endblock %}
+  {% block display-property-detail-js %}{% endblock %}
+  </body>
+</html>

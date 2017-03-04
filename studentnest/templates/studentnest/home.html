@@ -1,0 +1,18 @@
+{% extends "studentnest/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="section search-module">
+      <form class="search-form" action="{% url 'studentnest:search_property' %}" method="get">
+        {% include "studentnest/base-search-module.html" %}
+        <input type="hidden" name="action" value="search">
+      </form>
+    </div>
+{% endblock %}
+{% block search-property-js %}
+    {% if success %}
+    <script>alert("{{ success }}")</script>
+    {% endif %}
+    <script src="{% static 'studentnest/js/search-property.js' %}"></script>
+    <link href="{% static 'studentnest/css/background.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+{% endblock %}

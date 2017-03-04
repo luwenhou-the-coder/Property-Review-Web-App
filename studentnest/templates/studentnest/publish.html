@@ -1,0 +1,45 @@
+{% extends "studentnest/base.html" %}
+{% load static %}
+
+{% block content %}
+    {% if type == "publish" %}
+    <form class="form-publish" enctype="multipart/form-data" action="{% url 'studentnest:publish' %}" method="POST">
+    {% elif type == "edit_property" %}
+    <form class="form-publish" enctype="multipart/form-data" action="{% url 'studentnest:edit_property' id %}" method="POST">
+    {% endif %}
+        <div class="form-header">
+            {% for error in PublishForm.non_field_errors %}
+            <p class="error-message-text">
+            {{ error }}
+            </p>
+            {% endfor %}
+            <p style="color: red">{{message}}</p>
+        </div>
+        <table>
+	{% for field in PublishForm.visible_fields %}
+	    <tr>
+  	    <td class="tag">{{field.label}}</td>
+  	    <td class="field-publish">{{field}}</td>
+  	    <td class="error-publish">{{field.errors}}</td>
+	    </tr>
+	{% endfor %}
+	{{ FormSet.management_form }}
+	{% for form in FormSet %}
+	    {{ form }}
+	{% endfor %}
+	</table>
+    <div class="form-elements">
+        {% for field in PublishForm.hidden_fields %}
+        {{field}}
+        {% endfor %}
+        <br>
+	{% if type == "publish" %}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Publish</button>
+	{% elif type == "edit_property" %}
+	<button class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
+	{% endif %}
+        {% csrf_token %}
+    </div>
+    <p>{{ message }}
+    </form>
+{% endblock %}

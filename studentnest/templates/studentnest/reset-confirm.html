@@ -1,0 +1,29 @@
+{% extends "studentnest/base.html" %}
+
+{% block content %}
+    <form class="form-login" action="{% url 'studentnest:reset_success' username %}" method="POST">
+    {% for error in ResetConfirmForm.non_field_errors %}
+    <p style="color: red">
+    {{ error }}
+    </p>
+    {% endfor %}
+    <table>
+	{% for field in ResetConfirmForm.visible_fields %}
+	<tr>
+  	<td>{{field.label_tag}}</td>
+  	<td>{{field}}</td>
+  	<td style="color: red">{{field.errors}}</td>
+	</tr>
+	{% endfor %}
+    </table>
+    {% for field in ResetConfirmForm.hidden_fields %}
+    {{field}}
+    {% endfor %}
+    <br>
+    <div class="form-elements">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Confirm Reset</button>
+    </div>
+    {% csrf_token %}
+    <p>{{ message }}
+    </form>
+{% endblock %}

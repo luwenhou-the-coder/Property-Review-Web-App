@@ -1,0 +1,33 @@
+{% extends "studentnest/base.html" %}
+{% load static %}
+
+{% block content %}
+    <form class="form-login" action="{% url 'studentnest:login' %}" method="POST">
+        <div class="form-header">
+            <div class="login-error">
+                {% for error in LoginForm.non_field_errors %}
+                    <p class="error-message-text">
+                {{ error }}
+            </p>
+        {% endfor %}
+            </div>
+        </div>
+        <table>
+            {% for field in LoginForm.visible_fields %}
+            <tr>
+            <td>{{field.label}}</td>
+            <td>{{field}}</td>
+            <td style="color: red">{{field.errors}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="form-elements">
+		{% for field in LoginForm.hidden_fields %}
+		{{field}}
+		{% endfor %}
+            <button class="btn btn-lg btn-primary btn-block" type="submit" >Sign in</button>
+            <p><a href="{% url 'studentnest:reset_password' %}">Lost password?</a>
+        </div>
+	{% csrf_token %}
+    </form>
+{% endblock %}

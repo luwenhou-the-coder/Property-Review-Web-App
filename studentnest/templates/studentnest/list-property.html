@@ -1,0 +1,158 @@
+{% extends "studentnest/base.html" %}
+{% load static %}
+
+{% block rating-css %}
+    <link href="{% static 'studentnest/css/jquery.rateyo.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+{% endblock %}
+
+{% block content %}
+    <div class="section">
+      <form class="search-form">
+        {% include "studentnest/base-search-module.html" %}
+        <input type="hidden" name="action" value="ajax_search">
+      </form>
+
+      <div id="first-divider" class="divider property-list-divider"></div>
+      <div class="property-list">
+      {% for property in properties %}
+      <div id="property-{{property.pk}}">
+        <div class="row">
+        <div class="property-wrapper">
+            <div class="col s12 m7">
+                <div class="card">
+                    <div class="card-image waves-effect waves-block waves-light">
+                        <a href="details/{{property.id}}" ><img src="{% url 'studentnest:photo' property.id %}"></a>
+                    </div>
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col s11 m9">
+                                <a href="details/{{property.id}}"><span class="card-title grey-text text-darken-4">{{property.name}}</span></a>
+                                <p>{{property.street}}, {{property.city}}, {{property.state}} {{property.zip}}</p>
+                                <div id="property-rating-{{ property.pk }}"></div>
+                            </div>
+                            <div class="col s11 m2">
+                                <span class="card-title blue-text property-price-text">${{property.price}}</span>
+                                <div class="bedroom-num-wrapper">
+                                    <div class="bedroom-num-text">{{property.min_bedroom_num}}~{{property.max_bedroom_num}}</div>
+                                    <div class="bedroom-icon-wrapper">
+                                        <img src="{% static 'studentnest/images/bedroom_icon.ico' %}" class="bedroom-icon">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12 m5">
+                <div class="word-cloud-wrapper">
+                     <div class="card">
+                        <div id="cloud{{ property.pk }}">
+                        </div>
+                     </div>
+                </div>
+                <div class="review-wrapper">
+                    <div class="card grey darken-1">
+                        <div class="card-content white-text">
+                            <div class="row">
+                                <div class="col s12 m8">
+                                    <p class="review-title">Review</p>
+                                    <!--<p>by {{property.highest_vote_review.author}}</p>-->
+                                </div>
+                                <div class="col s12 m4">
+                                    <div class="like-num-wrapper">
+                                    <div class="like-num-text">{{property.highest_vote_review.votes}}</div>
+                                    <div class="like-icon-wrapper">
+                                        <img src="{% static 'studentnest/images/like-flat.png' %}" class="like-icon">
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            {% if property.highest_vote_review %}
+                            <p>{{property.highest_vote_review.content}}</p>
+                            {% else %}
+                            <p>No reviews yet</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+        <div class="divider property-list-divider"></div>
+      </div>
+      {% endfor %}
+      </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="{% static 'studentnest/js/d3.layout.cloud.js' %}"></script>
+<script src="{% static 'studentnest/js/wordCloud.js'%}"></script>
+{% endblock %}
+{% block rating-js %}
+    <script src="{% static 'studentnest/js/jquery.rateyo.js' %}"></script>
+{% endblock %}
+{% block list-property-js %}
+<script>
+    function drawWordCloud(id,aptnamelist) {
+            var fill = d3.scale.category20();
+
+            var word_Cloud_id = '#cloud' + id;
+            var color = d3.scale.linear()
+                    .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
+                    .range(["#e5e5ff", "#b2b2ff","#ff6666", "#99cc99","#7f7fff", "#3232ff","#ff1919", "#4ca64c","#000e5", "#000099", "#000066", "#000033", "#000000"]);
+
+            d3.layout.cloud().size([280, 280])
+                    .words(aptnamelist, id)
+                    .rotate(0)
+                    .fontSize(function (d) {
+                        return d.size*15;
+                    })
+                    .on("end", draw)
+                    .start();
+
+
+            function draw(words) {
+                d3.select(word_Cloud_id).select("svg").remove();
+                d3.select(word_Cloud_id).append("svg")
+                        .attr("width", 300)
+                        .attr("height", 280)
+                        .attr("class", "wordcloud")
+                        .append("g")
+                        // without the transform, words words would get cutoff to the left and top, they would
+                        // appear outside of the SVG area
+                        .attr("transform", "translate(82,150)")
+                        .selectAll("text")
+                        .data(words)
+                        .enter().append("text")
+                        .style("font-size", function (d) {
+                            return d.size + "px";
+                        })
+                        .style("fill", function(d, i) { return fill(i); })
+                        .attr("transform", function (d) {
+                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                        })
+                        .text(function (d) {
+                            return d.text;
+                        });
+            }
+        }
+
+    $(document).ready(function () {
+        {% for property in properties %}
+            keywordList = [];
+            {% for word in property.keywords %}
+                keywordList.push({"text":"{{word.keyword}}", "size":{{word.count}}});
+            {% endfor %}
+            drawWordCloud({{property.pk}}, keywordList);
+        $("#property-rating-{{ property.pk }}").rateYo({
+            rating: {{ property.rating }},
+            readOnly: true,
+        });
+        {% endfor %}
+    });
+</script>
+<script src="{% static 'studentnest/js/list-property.js' %}"></script>
+{% endblock %}

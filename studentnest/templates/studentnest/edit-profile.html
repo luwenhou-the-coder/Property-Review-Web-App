@@ -1,0 +1,34 @@
+{% extends "studentnest/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div>
+        <div class="display-message">
+		    <p class="success-message-text">{{ success_msg }}</p>
+	    </div>
+        <img src="{% url 'studentnest:profile_image' profile_id %}" class="edit-profile-image">
+        <form enctype="multipart/form-data" class="form-edit-profile" action="{% url 'studentnest:edit_profile' %}" method="post">
+            <table>
+            {% for field in profile_form.visible_fields %}
+                <tr>
+                    <td class="tag">{{field.label}}</td>
+                    <td class="field">{{field}}</td>
+                    <td class="error">{{field.errors}}</td>
+                </tr>
+            {% endfor %}
+            </table>
+            <div class="form-elements">
+		        <button class="btn btn-md btn-primary btn-edit-profile" type="submit">Save</button>
+            </div>
+		    {% csrf_token %}
+	    </form>
+    </div>
+{% endblock %}
+
+{% block edit-profile-js %}
+    <script>
+        $(document).ready(function() {
+            $('select').material_select();
+        });
+    </script>
+{% endblock %}

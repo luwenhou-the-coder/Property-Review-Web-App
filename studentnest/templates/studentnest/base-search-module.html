@@ -1,0 +1,78 @@
+    <div class="row">
+        <ul class="error-list"></ul>
+    </div>
+    <div class="row">
+      <div class="search-wrapper">
+          <div class="search-input">
+            <input id="search" name="location" placeholder="City/State">
+          </div>
+          <div for="search" class="search-label"><i class="material-icons">search</i></div>
+      </div>
+    </div>
+    <div class="row">
+    <div class="filter-wrapper">
+        <div class="filter-property-type">
+            <div class="input-field col s12">
+              <select name="property_type">
+                  <option value="all" selected>All</option>
+                  <option value="APARTMENT">Apartment</option>
+                  <option value="HOUSE">House</option>
+                  <option value="TOWNHOUSE">Townhouse</option>
+              </select>
+              <label>Property Type</label>
+            </div>
+        </div>
+        <div class="filter-min-bedroom-number">
+            <div class="input-field col s12">
+              <select name="min_bedroom_num">
+                  <option value="0" selected>Any</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+              </select>
+              <label>Min. Bedrooms</label>
+            </div>
+        </div>
+        <div class="filter-max-bedroom-number">
+            <div class="input-field col s12">
+              <select name="max_bedroom_num">
+                  <option value="65535" selected>Any</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+              </select>
+              <label>Max. Bedrooms</label>
+            </div>
+        </div>
+        <div class="filter-min-price">
+            <div class="input-field col s12">
+              <select name="min_price">
+                  <option value="-1" selected>Any</option>
+                  <option value="0">0</option>
+                  <option value="500">$500</option>
+                  <option value="1000">$1000</option>
+                  <option value="1500">$1500</option>
+                  <option value="2000">$2000</option>
+              </select>
+              <label>Min. Price</label>
+            </div>
+        </div>
+        <div class="filter-max-price">
+            <div class="input-field col s12">
+              <select name="max_price">
+                  <option value="102400" selected>Any</option>
+                  <option value="0">0</option>
+                  <option value="500">$500</option>
+                  <option value="1000">$1000</option>
+                  <option value="1500">$1500</option>
+                  <option value="2000">$2000</option>
+              </select>
+              <label>Max. Price</label>
+            </div>
+        </div>
+       </div>
+    </div>

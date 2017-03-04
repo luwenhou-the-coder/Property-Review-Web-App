@@ -1,0 +1,29 @@
+{% extends "studentnest/base.html" %}
+{% load static %}
+
+{% block content %}
+    <table class="striped">
+    <thead>
+        <tr>
+        <th data-field="id">Property Name</th>
+        <th data-field="name">Price</th>
+        <th data-field="price">Street</th>
+        <th data-field="price">City</th>
+	<th data-field="price">State</th>
+        </tr>
+    </thead>
+    {% for property in properties %}
+	<tr>
+	<td>{{property.name}}</td>
+	<td>${{property.price}}</td>
+	<td>{{property.street}}</td>
+	<td>{{property.city}}</td>
+	<td>{{property.state}}</td>
+	<td><a class="waves-effect waves-light btn-large" href="{% url 'studentnest:edit_property' property.id %}"><i class="material-icons left">edit</i>Edit</a></td>
+	</tr>
+    {% endfor %}
+    </table>
+    {% if success %}
+    <script>alert("{{ success }}")</script>
+    {% endif %}
+{% endblock %}

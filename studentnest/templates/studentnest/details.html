@@ -1,0 +1,465 @@
+{% extends "studentnest/base.html" %}
+{% load static %}
+{% block rating-css %}
+    <link href="{% static 'studentnest/css/jquery.rateyo.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+{% endblock %}
+{% block content %}
+    <div class="slider-wrapper">
+        <div class="slider">
+            <ul class="slides">
+              <li>
+                <img src="{% url 'studentnest:photo1' review_detail.property.id %}"> <!-- random image -->
+              </li>
+              <li>
+                <img src="{% url 'studentnest:photo2' review_detail.property.id %}"> <!-- random image -->
+              </li>
+              <li>
+                <img src="{% url 'studentnest:photo3' review_detail.property.id %}"> <!-- random image -->
+              </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s1">
+        <li class="tab col s3"><a class="active" href="#test1">Details</a></li>
+        <li class="tab col s3"><a href="#test2">Reviews</a></li>
+        <li class="tab col s3 "><a href="#test3">Statistics</a></li>
+      </ul>
+    </div>
+    <div id="test1" class="col s12">
+        <div class="divider"></div>
+          <div class="section">
+            <h5>{{review_detail.property.name}}</h5>
+            <p>{{review_detail.property.street}}, {{review_detail.property.city}}, {{review_detail.property.state}}, {{review_detail.property.zip}}</p>
+            <h5>${{review_detail.property.price}}</h5>
+            <h5>{{review_detail.property.min_bedroom_num}}~{{review_detail.property.max_bedroom_num}} bedrooms</h5>
+          </div>
+        <div class="divider"></div>
+          <div class="section">
+            <h5>Description</h5>
+            <p>{{review_detail.property.description}}</p>
+          </div>
+
+
+        <div class="divider"></div>
+          <div class="section">
+            <h5>Location</h5>
+      <script>var latitude = '{{review_detail.property.latitude}}';var longitude = '{{review_detail.property.longitude}}';</script>
+            <script src="{% static 'studentnest/js/draw-map.js' %}"></script>
+      <script src="https://maps.googleapis.com/maps/api/js?key={{MAP_KEY}}&libraries=places&callback=initMap" async defer></script>
+      <div id="map" style="height:400px;width:800px;margin:0 auto"></div>
+      <div style="width:800px;margin:0 auto;text-align:center">
+    <a class="waves-effect waves-light btn-large" onclick="getNearbyStores()"><i class="material-icons left">store</i>Stores</a>
+    <a class="waves-effect waves-light btn-large" onclick="getNearbyRestaurants()"><i class="material-icons left">restaurant</i>Restaurants</a>
+    <a class="waves-effect waves-light btn-large" onclick="getNearbyUniversities()"><i class="material-icons left">school</i>Universities</a>
+        </div>
+      <script src="{% static 'studentnest/js/google.js' %}"></script>
+          </div>
+        <div class="divider"></div>
+          <div class="section">
+            <h5>Contact</h5>
+              <p>Contact person: {{review_detail.property.contact_person}}</p>
+              <p>Email: {{review_detail.property.contact_email}}</p>
+              <p>Phone: {{review_detail.property.contact_phone}}</p>
+          </div>
+
+    </div>
+    <div id="test2" class="col s12">
+        <div class="divider"></div>
+          <div class="section">
+             <h5 id="numReviews">{{ review_detail.property.counts }} reviews</h5>
+              <ul class="collection review-list">
+                  {% for review in review_detail.property.reviews %}
+                <li class="collection-item avatar">
+                  <img src="{% url 'studentnest:profile_image' review.author.profile.id %}"  class="circle responsive-img">
+                  <span class="title">{{review.author.first_name}}</span>
+                  <p>{{review.post_time}}<br>
+                      {{review.content}}
+                      <div id="individual-rating-{{review.pk}}"></div>
+                  </p>
+                  <a href="#!" class="secondary-content review-count" id={{review.id}}>
+                      <i class="material-icons" >thumb_up</i>
+                      {{review.votes}}
+                  </a>
+                </li>
+                  {% endfor %}
+              </ul>
+          </div>
+        <!--Write your review-->
+        {% if user.is_authenticated %}
+        <div class="row">
+            <form class="col s12 review-form">
+              <div class="row">
+                <div class="input-field col s6">
+                  <i class="material-icons prefix">mode_edit</i>
+                  <textarea id="icon_prefix2" class="materialize-textarea" name="content"></textarea>
+                    <input type="hidden" name="reviewRate" id="hidden_rate" value="0.0">
+                  <label for="icon_prefix2">Leave your review</label>
+                    <div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rate this property:&nbsp;&nbsp;&nbsp;&nbsp;<span id="rate"></span>
+                        <div style="margin-left: 3rem;" id="form-rating"></div>
+                    </div>
+                  <button id="form-button" style="margin-left: 3rem;margin-top: 1rem;" class="waves-effect waves-light btn" type="submit">Submit</button>
+                </div>
+              </div>
+                {% csrf_token %}
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <div id="test3" class="col s12">
+        <div class="divider"></div>
+        <div class="section">
+            <table>
+                <tbody id="statistics-table">
+                    <tr>
+                        <td><div id="gender-chart"></div></td>
+                        <td><div id="age-chart"></div></td>
+                    </tr>
+                    <tr>
+                        <td><div id="univ-chart"></div></td>
+                        <td><div id="major-chart"></div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+{% endblock %}
+{% block rating-js %}
+<script src="{% static 'studentnest/js/jquery.rateyo.js' %}"></script>
+<script>
+
+    function addReview(event) {
+        event.preventDefault();
+        if($('textarea[name="content"]').val().length==0 || $('input[name="reviewRate"]').val()==0.0)
+            alert("Please complete the form before submit!");
+        else{
+            $.ajax({
+            url: '/studentnest/postReview/{{review_detail.property.id}}',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: updateReviews
+        });
+        }
+
+    }
+
+    function updateReviews(data){
+        $('#icon_prefix2').val("");
+        var review_list=$('.review-list');
+        review_list.append('<li class="collection-item avatar"><img src="/studentnest/profile-images/{{user.profile.id}}'+'" class="circle responsive-img">'+
+                  '<span class="title">{{user.first_name}}</span><p>'+
+                  data.post_time+'<br>'+data.content+'<div id="individual-rating-'+data.id+'"></div>'+
+                  '</p><a href="#!" class="secondary-content review-count" id="'+data.id+'"><i class="material-icons" >thumb_up</i>'+data.vote+'</a></li>'
+        );
+        $("#individual-rating-"+data.id).rateYo({
+            rating: data.rating,
+            readOnly: true
+        });
+        $('#'+data.id).on('click', incrlike);
+        $("#rate").text("");
+        $("#hidden_rate").attr("value", 0.0);
+        $("#numReviews").html(function(i, val){
+            {
+                val = val.split(" reviews")[0];
+                return (val*1+1)+" reviews";}
+            })
+        $("#form-rating").rateYo("destroy");
+        $("#form-rating").rateYo({starWidth: "20px"}).on("rateyo.set", function (e, data) {
+                $("#rate").text(data.rating);
+                $("#hidden_rate").attr("value", data.rating);
+        });
+
+        $('#statistics-table').empty();
+        $('#statistics-table').append('<tr>' +
+                                        '<td><div id="gender-chart"></div></td>' +
+                                        '<td><div id="age-chart"></div></td>' +
+                                      '</tr>' +
+                                      '<tr>' +
+                                        '<td><div id="univ-chart"></div></td>' +
+                                        '<td><div id="major-chart"></div></td>' +
+                                      '</tr>');
+
+        google.charts.load('current', {'packages':['corechart', 'bar']});
+
+        if (data.statistics.male_count == 'N/A' && data.statistics.female_count == 'N/A') {
+            $('#gender-chart').append('<p style="text-align: center">Not enough data for gender distribution display.</p>');
+        } else {
+            google.charts.setOnLoadCallback(drawGenderChart);
+        }
+
+        if (data.statistics.zero_seventeen_count == 'N/A' && data.statistics.eighteen_twentytwo_count == 'N/A'
+            && data.statistics.twentythree_twentynine_count == 'N/A' && data.statistics.thirty_more_count == 'N/A') {
+            $('#age-chart').append('<p style="text-align: center">Not enough data for age distribution display.</p>');
+        } else {
+            google.charts.setOnLoadCallback(drawAgeChart);
+        }
+
+        google.charts.setOnLoadCallback(drawUnivChart);
+        google.charts.setOnLoadCallback(drawMajorChart);
+
+        function drawGenderChart() {
+            var gender_data = google.visualization.arrayToDataTable([
+              ['Gender Statistics', 'Number of people'],
+              ['Male', data.statistics.male_count ],
+              ['Female', data.statistics.female_count],
+            ]);
+
+            var gender_options = {
+                title: 'Gender Distribution',
+                width: 500,
+                height: 500,
+                pieHole: 0.4,
+            };
+
+            var gender_chart = new google.visualization.PieChart(document.getElementById('gender-chart'));
+            gender_chart.draw(gender_data, gender_options);
+        }
+
+        function drawAgeChart() {
+            var age_data = google.visualization.arrayToDataTable([
+                ["Age Statistics", "Number of people"],
+                ["< 18", data.statistics.zero_seventeen_count],
+                ["18 ~ 22", data.statistics.eighteen_twentytwo_count],
+                ["23 ~ 29", data.statistics.twentythree_twentynine_count],
+                ["> 29", data.statistics.thirty_more_count]
+            ]);
+
+            var age_options = {
+                title: "Age Distribution",
+                width: 500,
+                height: 500,
+                bar: {groupWidth: "95%"},
+                legend: { position: "none" },
+            };
+
+            var age_chart = new google.visualization.ColumnChart(document.getElementById("age-chart"));
+            age_chart.draw(age_data, age_options);
+        }
+
+        function drawUnivChart() {
+            var raw_univ_data = [];
+            var univ_chart_header = ['University Statistics', 'Number of people'];
+            raw_univ_data.push(univ_chart_header);
+
+            for(var i = 0; i < data.statistics.university_statistics.length; i++) {
+                var single_univ_statistics = data.statistics.university_statistics[i];
+                var single_univ_data = [single_univ_statistics.university, parseInt(single_univ_statistics.total)];
+                raw_univ_data.push(single_univ_data);
+            }
+
+            var univ_data = google.visualization.arrayToDataTable(raw_univ_data);
+
+            var univ_options = {
+              title: 'University Distribution (Top 5)',
+              width: 500,
+              height: 500,
+            };
+
+            var univ_chart = new google.visualization.PieChart(document.getElementById('univ-chart'));
+            univ_chart.draw(univ_data, univ_options);
+        }
+
+        function drawMajorChart() {
+            var raw_major_data = [];
+            var major_chart_header = ['Major Statistics', 'Number of people'];
+            raw_major_data.push(major_chart_header);
+
+            for (var i = 0; i < data.statistics.major_statistics.length; i++) {
+                var single_major_statistics = data.statistics.major_statistics[i];
+                var single_major_data = [single_major_statistics.major, parseInt(single_major_statistics.total)];
+                raw_major_data.push(single_major_data);
+            }
+
+            var major_data = google.visualization.arrayToDataTable(raw_major_data);
+
+            var major_options = {
+                title: 'Major Distribution (Top 5)',
+                width: 500,
+                height: 500,
+                legend: { position: 'none' },
+            };
+
+            var major_chart = new google.visualization.BarChart(document.getElementById('major-chart'));
+            major_chart.draw(major_data, major_options);
+        }
+    }
+
+
+    $(document).ready(function(){
+      $('.review-form').on('submit', addReview);
+      $('.slider').slider();
+//        add rate to each review
+        {% for review in review_detail.property.reviews %}
+        $("#individual-rating-{{ review.pk }}").rateYo({
+            rating: {{ review.rating }},
+            readOnly: true
+        });
+        {% endfor %}
+        $('.review-count').on('click', incrlike);
+
+//        add rate to form for user
+        $("#form-rating").rateYo({starWidth: "20px"}).on("rateyo.set", function (e, data) {
+                $("#rate").text(data.rating);
+                $("#hidden_rate").attr("value", data.rating);
+        });
+
+        // CSRF set-up copied from Django docs
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+      }
+  var csrftoken = getCookie('csrftoken');
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    }
+  });
+    });
+
+function incrlike(event) {
+        $.ajax({
+            url: '/studentnest/incrLike/' + this.id,
+            type: 'GET',
+        });
+    var likes="";
+        $(this).html(function(i, val){
+            {
+                likes = val.split("</i>")[1];
+                return "";}
+            })
+        $(this).replaceWith("<p class='secondary-content'>"+(likes*1+1)+" likes</p>");
+    }
+
+
+
+
+</script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart', 'bar']});
+
+    {% if reviewer_statistics.gender_statistics is None %}
+        $('#gender-chart').append('<p style="text-align: center">Not enough data for gender distribution display.</p>');
+    {% else %}
+        google.charts.setOnLoadCallback(drawGenderChart);
+    {% endif %}
+
+    {% if reviewer_statistics.age_statistics is None %}
+        $('#age-chart').append('<p style="text-align: center">Not enough data for age distribution display.</p>');
+    {% else %}
+        google.charts.setOnLoadCallback(drawAgeChart);
+    {% endif %}
+
+    {% if reviewer_statistics.univ_statistics is None %}
+        $('#univ-chart').append('<p style="text-align: center">Not enough data for university distribution display.</p>');
+    {% else %}
+        google.charts.setOnLoadCallback(drawUnivChart);
+    {% endif %}
+
+    {% if reviewer_statistics.major_statistics is None %}
+        $('#major-chart').append('<p style="text-align: center">Not enough data for major distribution display.</p>');
+    {% else %}
+        google.charts.setOnLoadCallback(drawMajorChart);
+    {% endif %}
+
+    function drawGenderChart() {
+        var gender_data = google.visualization.arrayToDataTable([
+          ['Gender Statistics', 'Number of people'],
+          ['Male', {{ reviewer_statistics.gender_statistics.male_count }}],
+          ['Female', {{ reviewer_statistics.gender_statistics.female_count }}],
+        ]);
+
+        var gender_options = {
+            title: 'Gender Distribution',
+            width: 500,
+            height: 500,
+            pieHole: 0.4,
+        };
+
+        var gender_chart = new google.visualization.PieChart(document.getElementById('gender-chart'));
+        gender_chart.draw(gender_data, gender_options);
+    }
+
+    function drawAgeChart() {
+        var age_data = google.visualization.arrayToDataTable([
+            ["Age Statistics", "Number of people"],
+            ["< 18", {{ reviewer_statistics.age_statistics.zero_seventeen_count }}],
+            ["18 ~ 22", {{ reviewer_statistics.age_statistics.eighteen_twentytwo_count }}],
+            ["23 ~ 29", {{ reviewer_statistics.age_statistics.twentythree_twentynine_count }}],
+            ["> 29", {{ reviewer_statistics.age_statistics.thirty_more_count }}]
+        ]);
+
+        var age_options = {
+            title: "Age Distribution",
+            width: 500,
+            height: 500,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+        };
+
+        var age_chart = new google.visualization.ColumnChart(document.getElementById("age-chart"));
+        age_chart.draw(age_data, age_options);
+    }
+
+    function drawUnivChart() {
+        var raw_univ_data = [];
+        var univ_chart_header = ['University Statistics', 'Number of people'];
+        raw_univ_data.push(univ_chart_header);
+
+        {% for single_univ_statistics in reviewer_statistics.univ_statistics %}
+            var single_univ_data = ['{{ single_univ_statistics.university }}', {{ single_univ_statistics.total }}];
+            raw_univ_data.push(single_univ_data);
+        {% endfor %}
+
+        var univ_data = google.visualization.arrayToDataTable(raw_univ_data);
+
+        var univ_options = {
+          title: 'University Distribution (Top 5)',
+          width: 500,
+          height: 500,
+        };
+
+        var univ_chart = new google.visualization.PieChart(document.getElementById('univ-chart'));
+        univ_chart.draw(univ_data, univ_options);
+    }
+
+    function drawMajorChart() {
+        var raw_major_data = [];
+        var major_chart_header = ['Major Statistics', 'Number of people'];
+        raw_major_data.push(major_chart_header);
+
+        {% for single_major_statistics in reviewer_statistics.major_statistics %}
+            var single_major_data = ['{{ single_major_statistics.major }}', {{ single_major_statistics.total }}];
+            raw_major_data.push(single_major_data);
+        {% endfor %}
+
+        var major_data = google.visualization.arrayToDataTable(raw_major_data);
+
+        var major_options = {
+            title: 'Major Distribution (Top 5)',
+            width: 500,
+            height: 500,
+            legend: { position: 'none' },
+        };
+
+        var major_chart = new google.visualization.BarChart(document.getElementById('major-chart'));
+        major_chart.draw(major_data, major_options);
+    }
+
+</script>
+{% endblock %}

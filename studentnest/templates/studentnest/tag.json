@@ -1,0 +1,4 @@
+{ 
+	"tag_key" : "{{tag.key}}",
+	"tag_value" : "{{tag.value}}"
+}

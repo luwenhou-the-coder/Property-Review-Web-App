@@ -1,0 +1,2 @@
+{"keywords":[{% for aptKeyWord in aptKeyWords %}{%spaceless%}{% include 'studentnest/word.json' %}
+  {%endspaceless%}{% if not forloop.last %}, {% endif %}{% endfor %}]}

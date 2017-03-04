@@ -1,0 +1,239 @@
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+html, body {
+  height: 100%;
+}
+.page-wrap {
+    min-height: 100%;
+    /* equal to footer height */
+    margin-bottom: -72px;
+}
+.page-wrap:after {
+  content: "";
+  display: block;
+}
+.footer-wrapper, .page-wrap:after {
+  height: 72px;
+}
+.icon-block {
+  padding: 0 15px;
+}
+.icon-block .material-icons {
+	font-size: inherit;
+}
+.search-wrapper {
+    width: 70%;
+    height: 100px;
+    margin: auto;
+}
+.search-input {
+    float: left;
+    width: 90%;
+    margin-left: 12px;
+}
+.search-label {
+    float: left;
+    width: 5%;
+    height: 66px;
+    margin-top: 15px;
+    margin-left: 5px;
+    background: transparent;
+    cursor: pointer;
+}
+.filter-wrapper {
+    width: 70%;
+    height: 100px;
+    margin: auto;
+}
+.filter-property-type {
+    float: left;
+    width: 18%;
+}
+.filter-min-bedroom-number {
+    float: left;
+    width: 18%;
+    margin-left: 5px;
+}
+.filter-max-bedroom-number {
+    float: left;
+    width: 18%;
+    margin-left: 5px;
+}
+.filter-min-price {
+    float: left;
+    width: 18%;
+    margin-left: 5px;
+}
+.filter-max-price {
+    float: left;
+    width: 18%;
+    margin-left: 5px;
+}
+.property-list-divider {
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+.property-wrapper {
+    width: 80%;
+    height: 570px;
+    margin: auto;
+}
+.word-cloud-wrapper {
+
+}
+.review-wrapper {
+    margin-top: 20px;
+
+}
+.property-price-text {
+    text-align: right;
+}
+.property-rating {
+    padding-top: 5px;
+}
+.bedroom-num-wrapper {
+    margin-top: 25px;
+    width: 80px;
+    height: 50px;
+}
+.bedroom-num-text {
+    float: left;
+    font-size: 20px;
+    margin-top: 3px;
+}
+.bedroom-icon-wrapper {
+    float: left;
+    margin-left: 6px;
+}
+.bedroom-icon {
+    width: 30px;
+    height: 30px;
+}
+.review-title {
+    font-size: 20px;
+}
+.like-num-wrapper {
+    width: 60px;
+    height: 40px;
+}
+.like-num-text {
+    float: left;
+    font-size: 15px;
+    margin-top: 3px;
+}
+.like-icon-wrapper {
+    float: left;
+    margin-left: 6px;
+}
+.like-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.social-logo-img {
+    width: 30px;
+    height: 40px;
+    padding-top: 10px;
+}
+.search-module {
+    margin-top: 75px;
+    margin-bottom: 50px;
+}
+.error-list {
+    width: 50%;
+    margin-left: 250px;
+    color: red;
+}
+.form-login {
+    font-size: 17px;
+    margin: 70px auto;
+    width: 450px;
+}
+.form-register {
+    font-size: 17px;
+    margin-left: 200px;
+    width: 850px;
+}
+.form-publish {
+    font-size: 17px;
+    margin-left: 100px;
+    width: 650px;
+}
+.form-header{
+    font-size: 20px;
+    width: 70%;
+    margin: auto;
+}
+.login-error {
+    margin-left: 86px;
+}
+.form-elements{
+    width: 28%;
+    margin-left: 150px;
+}
+.form-edit-profile, .form-change-password {
+    font-size: 17px;
+    margin: 0 auto;
+    width: 50%;
+}
+td.tag {
+    width: 20%;
+}
+td.tag-publish {
+    width: auto;
+}
+td.field {
+    width: 35%;
+}
+td.field-publish {
+    width: auto;
+}
+td.error{
+    width: 60%;
+    color: red;
+}
+td.error-publish{
+    width: auto;
+    color: red;
+}
+label {
+    font-size: 16px;
+}
+.container label{
+    font-size: 14px !important;
+    color: black !important;
+}
+#search{
+    font-size: 16px !important;
+    color: black !important;
+}
+.display-message {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+}
+.success-message-text {
+  color: green;
+  font-size: 15px;
+}
+.edit-profile-image {
+     width: 150px;
+     height: 150px;
+     margin-left: 41%;
+}
+.error-message-text {
+  color: red;
+  font-size: 17px;
+}
+#map{
+    height: 400px;
+    width: 600px;
+}
+.slider-wrapper {
+    margin-bottom: 30px;
+}

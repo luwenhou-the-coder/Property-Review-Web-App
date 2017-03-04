@@ -1,0 +1,8 @@
+html, body {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+#map {
+    height: 100% !important;
+}

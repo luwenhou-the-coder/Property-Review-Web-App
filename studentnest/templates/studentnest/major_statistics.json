@@ -1,0 +1,4 @@
+{
+  "major" : "{{ single_major_statistics.major }}",
+  "total" : "{{ single_major_statistics.total }}"
+}

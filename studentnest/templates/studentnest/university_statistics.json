@@ -1,0 +1,4 @@
+{
+  "university" : "{{ single_univ_statistics.university }}",
+  "total" : "{{ single_univ_statistics.total }}"
+}
